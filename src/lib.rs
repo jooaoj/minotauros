@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fs;
 
+mod algos;
+
 pub struct Config {
     pub file_path: String,
 }
@@ -15,6 +17,8 @@ impl Config {
            Some(arg) => arg,
            None => return Err("Try giving a file path"),
        };
+
+       algos::Graph { sink: String::from("") };
        
        Ok(Config { file_path })
     }
