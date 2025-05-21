@@ -1,22 +1,26 @@
 use std::error::Error;
 use std::fs;
 
-pub struct Args {
+pub struct Config {
     pub file_path: String,
 }
 
-impl Args {
-    pub fn build(args: &[String]) -> Result<Args, &'static str> {
-       if args.len() == 1 {
-            return Err("Not enough arguments: give a file path");
-       }
-       let file_path = args[1].clone();
+impl Config {
+    pub fn build(
+        mut args: impl Iterator<Item = String>,
+    ) -> Result<Config, &'static str> {
+        args.next(); // Skip prepiatory args[0]
+
+       let file_path = match args.next() {
+           Some(arg) => arg,
+           None => return Err("Try giving a file path"),
+       };
        
-       Ok(Args { file_path })
+       Ok(Config { file_path })
     }
 }
 
-pub fn run(args: Args) -> Result<(), Box<dyn Error>> {
+pub fn run(args: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(args.file_path)?;
 
     welcome();
