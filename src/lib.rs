@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fs;
 
+mod algorithms;
+
 pub struct Config {
     pub file_path: String,
 }
@@ -21,18 +23,24 @@ impl Config {
 }
 
 pub fn run(args: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(args.file_path)?;
+    let maze_source = fs::read_to_string(args.file_path)?;
+    let maze_matrix: Vec<Vec<char>> = maze_source
+        .lines()
+        .map(|line| line.chars().collect())
+        .collect();
+
+    //println!("\n\nMaze:\n\n{:?}", maze_source);
 
     welcome();
 
-    println!("\n\n\tLabyrinth:\n\n{contents}");
+    algorithms::simple_r(maze_matrix);
 
     Ok(())
 }
 
 fn welcome() {
-    let default = String::from("Trémaux's");
-    println!("\n\n\tPentti got stuck in a labyrinth.\n\tFinding a way out with: {}", default);
+    let default = String::from("a basic");
+    println!("\n\n\tPentti got stuck in a maze.\n\tFinding a way out with {} algorithm", default);
 }
 
 #[cfg(test)]
