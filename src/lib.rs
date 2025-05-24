@@ -67,13 +67,13 @@ impl Labyrinth {
                     ' ' => Cell::Path,
                     '^' => {
                         start = (i, j);
-                        Cell::Path
+                        Cell::Current
                     }
                     'E' => {
                         goal = (i, j);
-                        Cell::Path
+                        Cell::Solution
                     }
-                    _ => Cell::Wall,
+                    _ => Cell::Visited,
                 };
                 row.push(cell);
             }
@@ -81,6 +81,7 @@ impl Labyrinth {
         }
 
         let size = grid.len();
+
         Labyrinth {
             size,
             grid,
@@ -102,7 +103,7 @@ impl Labyrinth {
                     Cell::Path => " ".to_string(),
                     Cell::Current => format!("^"),
                     Cell::Visited => format!("@"),
-                    Cell::Solution => format!("S")
+                    Cell::Solution => format!("E")
                 };
                 print!("{}", symbol)
             }

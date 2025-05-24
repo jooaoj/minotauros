@@ -155,6 +155,10 @@ fn run(args: Config) -> Result<(), Box<dyn Error>> {
 
     Labyrinth::display(&labyrinth);
 
+    print!("{:?}", labyrinth.grid);
+
+    println!("Start: {:?}, Goal: {:?}, Height: {:?}", labyrinth.start, labyrinth.goal, labyrinth.size);
+
     Ok(())
 }
 
