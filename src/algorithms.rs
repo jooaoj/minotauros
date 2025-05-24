@@ -1,29 +1,25 @@
-use std::error::Error;
 
-pub fn simple_r(maze: Vec<Vec<char>>) -> Result<(), Box<dyn Error>> {
-	//let mut src: Option<usize>;
-	let mut cur: Vec<usize> = Vec::new();
-	let mut dst: Vec<Option<usize>> = Vec::new();
 
-	let mut found: bool = false;
+pub fn a_star(labyrinth: &mut Labyrinth) -> Option<Vec<(usize, usize)>> {
+    let initial_estimate = labyrinth.manhattan_distance(labyrinth.start);
+    let mut bound = initial_estimate * 3;  // Start with a more generous bound
+    let mut state = SearchState {
+        path: vec![labyrinth.start],
+        visited: vec![vec![false; labyrinth.size]; maze.size],
+    };
 
-	// Scan maze
-	for (y, row) in maze.iter().enumerate() {
-		println!("{:?}", &row);
-		for (x, col) in row.iter().enumerate() {
-			if !found {
-				if let Some(src) = row.iter().position(|&caret| caret == '^') {
-					cur.push(Some(src).unwrap());
-					cur.push(y);
-					found = true;
-				}
-			} 
-			//print!("{:?}", &col);
-		}
-		//println!("\n");
-	}
-
-	println!("{:?}", cur);
-
-	Ok(())
+    while bound < labyrinth.size * labyrinth.size {  // Upper limit to prevent infinite loops
+        match search(labyrinth, 0, bound, &mut state) {
+            SearchResult::Found(solution) => return Some(solution),
+            SearchResult::NewBound(new_bound) => {
+                if new_bound == usize::MAX {
+                    bound += labyrinth.size;  // More aggressive bound increase
+                } else {
+                    bound = new_bound + labyrinth.size/2;  // Significant increase to reduce iterations
+                }
+                state.path = vec![labyrinth.start];  // Keep visited cells marked
+            }
+        }
+    }
+    None
 }
