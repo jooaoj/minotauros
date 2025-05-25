@@ -6,6 +6,7 @@ import os
 import sys
 import time
 from collections import deque
+import timeit
 
 def parseMaze(mazeSource):
 	with open(mazeSource, 'r') as file:
@@ -47,7 +48,7 @@ def routing(maze, moveLimit):
 			return path
 		else:
 			display(maze, path)
-			time.sleep(0.01) # 1000 ms
+			#time.sleep(0.01) # 1000 ms
 			os.system('clear')
 
 		if moves >= moveLimit:
@@ -79,19 +80,30 @@ def main():
 		return 1
 
 	limit = [20, 150, 200]
+	complexity = []
 
 	for test in limit:
-		print(f"\n\tTrying with {test} moves:")	
+		print(f"\n\tTrying with {test} moves:")
+
+		start = time.time()
 		pathing = routing(maze, test)
+		end = time.time()
+		complexity.append(round(end - start, 2)) # s
+
 		display(maze, pathing)
+		
 		if not pathing:
 			print("\tNo route found\n")
 		else:
 			length = len(pathing)
 
-	print(f"\n\n\tFound exit in {length} moves!")
+	print(f"\n\n\tFound exit in {length} moves in {max(complexity)} s!")
 
 	return 0
+
+def test():
+    """Stupid test function"""
+    L = [i for i in range(100)]
 
 if __name__ == "__main__":
 	main()
